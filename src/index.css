@@ -1,0 +1,47 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+}
+
+body {
+  font-family: var(--font-sans);
+  background-color: #f1f5f9; /* slate-100 */
+}
+
+/* Custom modern transitions and shadows */
+.card-hover-effect {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.card-hover-effect:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+}
+
+
+/* Colores de cinta */
+.bg-lila { background-color: #c8a2c8 !important; }
+.bg-blanco { background-color: #ffffff !important; color: black !important; }
+.bg-verde { background-color: #28a745 !important; }
+.bg-azul { background-color: #007bff !important; }
+.bg-roja { background-color: #dc3545 !important; }
+.bg-amarilla { background-color: #ffc107 !important; color: black !important; }
+.bg-cafe { background-color: #6f4e37 !important; }
+.bg-negro { background-color: #000000 !important; }
+
+.bg-cosecha-lista {
+  background-color: #fff9c4 !important;
+  color: #856404 !important;
+  border: 1px solid #ffeeba !important;
+}
+
+.color-badge {
+  display: inline-block;
+  padding: 5px 10px;
+  border-radius: 15px;
+  font-size: 0.8em;
+  font-weight: bold;
+  border: 1px solid rgba(0,0,0,0.1);
+}
