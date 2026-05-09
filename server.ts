@@ -319,6 +319,21 @@ app.put('/api/enfunde/:id/cosecha', authenticateToken, requireRole('dueno'), (re
   res.json(db.registros_enfunde[index]);
 });
 
+// Usuarios (Admin)
+app.put('/api/admin/usuarios/:id', authenticateToken, requireRole('admin'), (req: any, res) => {
+  const id = parseInt(req.params.id);
+  const { username } = req.body;
+  if (!username) return res.status(400).json({ error: 'Username requerido' });
+
+  const db = loadDB();
+  const index = db.usuarios.findIndex(u => u.id === id);
+  if (index === -1) return res.status(404).json({ error: 'Usuario no encontrado' });
+
+  db.usuarios[index].username = username;
+  saveDB(db);
+  res.json(db.usuarios[index]);
+});
+
 app.get('/api/fincas/:id/historial', authenticateToken, (req: any, res) => {
   const id = parseInt(req.params.id);
   const db = loadDB();

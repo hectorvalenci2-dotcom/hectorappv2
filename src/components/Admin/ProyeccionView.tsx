@@ -6,9 +6,10 @@ interface ProyeccionViewProps {
   onBack: () => void;
   token: string;
   apiUrl: string;
+  resolveOwner?: (id?: number, nombre?: string) => string;
 }
 
-export const ProyeccionView: React.FC<ProyeccionViewProps> = ({ onBack, token, apiUrl }) => {
+export const ProyeccionView: React.FC<ProyeccionViewProps> = ({ onBack, token, apiUrl, resolveOwner }) => {
   const [fecha, setFecha] = useState('');
   const [proyeccion, setProyeccion] = useState<ProyeccionFecha | null>(null);
   const [loading, setLoading] = useState(false);
@@ -70,7 +71,7 @@ export const ProyeccionView: React.FC<ProyeccionViewProps> = ({ onBack, token, a
                 <div className="card border-0 shadow-sm h-100">
                   <div className="card-body">
                     <h6 className="text-success fw-bold mb-1">{r.finca}</h6>
-                    <p className="small text-muted mb-2">Dueño: {r.dueno}</p>
+                    <p className="small text-muted mb-2">Dueño: {resolveOwner ? resolveOwner(undefined, r.finca) : r.dueno}</p>
                     <div className="d-flex justify-content-between align-items-center">
                       <span className={`badge bg-${r.color_cinta.toLowerCase().replace('é', 'e')} text-white`}>{r.color_cinta}</span>
                       <span className="h5 mb-0 fw-bold">{r.total} <small className="text-muted" style={{ fontSize: '0.6em' }}>racimos</small></span>

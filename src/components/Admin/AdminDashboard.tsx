@@ -11,14 +11,39 @@ interface AdminDashboardProps {
   stats: AdminStats | null;
   dashboardData: any[];
   allEnfunde: any[];
+  allDuenos: any[];
+  allFincas: any[];
   token: string;
   apiUrl: string;
   onRefresh: () => void;
   onDeleteFinca?: (id: number) => Promise<boolean>;
 }
 
-export const AdminDashboard: React.FC<AdminDashboardProps> = ({ stats, dashboardData, allEnfunde, token, apiUrl, onRefresh, onDeleteFinca }) => {
+export const AdminDashboard: React.FC<AdminDashboardProps> = ({ stats, dashboardData, allEnfunde, allDuenos, allFincas, token, apiUrl, onRefresh, onDeleteFinca }) => {
   const [view, setView] = useState<'none' | 'duenos' | 'fincas' | 'proyeccion' | 'simulador' | 'matriz'>('none');
+
+  // Mapeo global de fincas a dueños para consistencia absoluta
+  const ownerMap = React.useMemo(() => {
+    const map: Record<string, string> = {};
+    if (!allFincas || !allDuenos) return map;
+
+    allFincas.forEach(f => {
+      const dueno = allDuenos.find(u => u.id === f.dueno_id);
+      if (dueno) {
+        map[f.id] = dueno.username;
+        map[f.nombre] = dueno.username; // También por nombre como respaldo pedido por usuario
+      }
+    });
+    return map;
+  }, [allFincas, allDuenos]);
+
+  const resolveOwner = React.useCallback((fincaId?: number, fincaNombre?: string) => {
+    if (fincaId && ownerMap[fincaId]) return ownerMap[fincaId];
+    if (fincaNombre && ownerMap[fincaNombre]) return ownerMap[fincaNombre];
+    
+    // Si no está en el mapa, buscamos en el adminStats o registros pero ownerMap debería ser la fuente de verdad
+    return 'Pendiente de asignar';
+  }, [ownerMap]);
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -52,35 +77,40 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ stats, dashboard
         return (
           <div className="animate-in slide-in-from-right duration-300">
             <BackButton />
-            <DuenosView onBack={() => setView('none')} token={token} apiUrl={apiUrl} />
+            <DuenosView onBack={() => setView('none')} token={token} apiUrl={apiUrl} onRefresh={onRefresh} />
           </div>
         );
       case 'fincas': 
         return (
           <div className="animate-in slide-in-from-right duration-300">
             <BackButton />
-            <FincasView onBack={() => setView('none')} token={token} apiUrl={apiUrl} onDeleteFinca={onDeleteFinca} />
+            <FincasView onBack={() => setView('none')} token={token} apiUrl={apiUrl} onDeleteFinca={onDeleteFinca} resolveOwner={resolveOwner} />
           </div>
         );
       case 'proyeccion': 
         return (
           <div className="animate-in slide-in-from-right duration-300">
             <BackButton />
-            <ProyeccionView onBack={() => setView('none')} token={token} apiUrl={apiUrl} />
+            <ProyeccionView onBack={() => setView('none')} token={token} apiUrl={apiUrl} resolveOwner={resolveOwner} />
           </div>
         );
       case 'simulador': 
         return (
           <div className="animate-in slide-in-from-right duration-300">
             <BackButton />
-            <SimuladorCosechaView onBack={() => setView('none')} allEnfunde={allEnfunde} />
+            <SimuladorCosechaView onBack={() => setView('none')} allEnfunde={allEnfunde} resolveOwner={resolveOwner} />
           </div>
         );
       case 'matriz': 
         return (
           <div className="animate-in slide-in-from-right duration-300">
             <BackButton />
-            <MasterProductionMatrix allEnfunde={allEnfunde} currentWeek={currentWeek} onRefresh={onRefresh} />
+            <MasterProductionMatrix 
+              allEnfunde={allEnfunde} 
+              currentWeek={currentWeek} 
+              onRefresh={onRefresh} 
+              resolveOwner={resolveOwner}
+            />
           </div>
         );
       default:

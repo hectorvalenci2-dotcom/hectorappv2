@@ -11,6 +11,8 @@ export const useBananTrack = () => {
   const [adminStats, setAdminStats] = useState<AdminStats | null>(null);
   const [dashboardData, setDashboardData] = useState<any[]>([]);
   const [allEnfunde, setAllEnfunde] = useState<any[]>([]);
+  const [allDuenos, setAllDuenos] = useState<any[]>([]);
+  const [allFincas, setAllFincas] = useState<any[]>([]);
   const [alert, setAlert] = useState<{ message: string; type: string } | null>(null);
 
   const showAlert = (message: string, type: string = 'info') => {
@@ -116,6 +118,32 @@ export const useBananTrack = () => {
     }
   }, [token, user]);
 
+  const fetchAllDuenos = useCallback(async () => {
+    if (!token || user?.rol !== 'admin') return;
+    try {
+      const res = await fetch(`${API_URL}/admin/duenos`, {
+        headers: { 'Authorization': `Bearer ${token}` },
+      });
+      const data = await res.json();
+      setAllDuenos(data);
+    } catch (error) {
+      console.error('Error fetching all duenos:', error);
+    }
+  }, [token, user]);
+
+  const fetchAllFincasAdmin = useCallback(async () => {
+    if (!token || user?.rol !== 'admin') return;
+    try {
+      const res = await fetch(`${API_URL}/fincas`, {
+        headers: { 'Authorization': `Bearer ${token}` },
+      });
+      const data = await res.json();
+      setAllFincas(data);
+    } catch (error) {
+      console.error('Error fetching all fincas admin:', error);
+    }
+  }, [token, user]);
+
   const refreshAll = useCallback(async () => {
     if (!token) return;
     if (user?.rol === 'dueno') {
@@ -124,10 +152,12 @@ export const useBananTrack = () => {
       await Promise.all([
         fetchAdminStats(),
         fetchDashboard(),
-        fetchAllEnfunde()
+        fetchAllEnfunde(),
+        fetchAllDuenos(),
+        fetchAllFincasAdmin()
       ]);
     }
-  }, [token, user, fetchFincas, fetchAdminStats, fetchDashboard, fetchAllEnfunde]);
+  }, [token, user, fetchFincas, fetchAdminStats, fetchDashboard, fetchAllEnfunde, fetchAllDuenos, fetchAllFincasAdmin]);
 
   useEffect(() => {
     const storedUser = localStorage.getItem('user');
@@ -169,6 +199,8 @@ export const useBananTrack = () => {
     adminStats,
     dashboardData,
     allEnfunde,
+    allDuenos,
+    allFincas,
     alert,
     login,
     register,
@@ -177,6 +209,8 @@ export const useBananTrack = () => {
     fetchAdminStats,
     fetchDashboard,
     fetchAllEnfunde,
+    fetchAllDuenos,
+    fetchAllFincasAdmin,
     refreshAll,
     getISOWeek,
     showAlert,

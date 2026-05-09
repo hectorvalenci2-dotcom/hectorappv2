@@ -5,9 +5,10 @@ import { formatDate } from '../../utils/dateUtils';
 interface SimuladorCosechaViewProps {
   onBack: () => void;
   allEnfunde: RegistroEnfundeDetalle[];
+  resolveOwner?: (id?: number, nombre?: string) => string;
 }
 
-export const SimuladorCosechaView: React.FC<SimuladorCosechaViewProps> = ({ onBack, allEnfunde }) => {
+export const SimuladorCosechaView: React.FC<SimuladorCosechaViewProps> = ({ onBack, allEnfunde, resolveOwner }) => {
   console.log('SimuladorCosechaView rendered with', allEnfunde.length, 'records');
   const [fechaReferencia, setFechaReferencia] = useState(new Date().toISOString().split('T')[0]);
   const [semanasCalibre, setSemanasCalibre] = useState(11);
@@ -38,7 +39,7 @@ export const SimuladorCosechaView: React.FC<SimuladorCosechaViewProps> = ({ onBa
         if (pendiente > 0) {
           lotes.push({
             finca: r.finca_nombre,
-            dueno: r.dueno_username,
+            dueno: resolveOwner ? resolveOwner(r.finca_id, r.finca_nombre) : r.dueno_username,
             fecha_registro: r.fecha_registro,
             semana_registro: semanaEnfunde,
             cantidad_proyectada: r.cantidad_registrada || r.cantidad_racimos || 0,

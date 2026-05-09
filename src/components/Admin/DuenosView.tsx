@@ -5,11 +5,14 @@ interface DuenosViewProps {
   onBack: () => void;
   token: string;
   apiUrl: string;
+  onRefresh?: () => void;
 }
 
-export const DuenosView: React.FC<DuenosViewProps> = ({ onBack, token, apiUrl }) => {
+export const DuenosView: React.FC<DuenosViewProps> = ({ onBack, token, apiUrl, onRefresh }) => {
   const [duenos, setDuenos] = useState<DuenoDetalle[]>([]);
   const [selectedDueno, setSelectedDueno] = useState<DuenoDetalle | null>(null);
+  const [editingDueno, setEditingDueno] = useState<DuenoDetalle | null>(null);
+  const [newUsername, setNewUsername] = useState('');
   const [duenoFincas, setDuenoFincas] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
 
@@ -27,6 +30,28 @@ export const DuenosView: React.FC<DuenosViewProps> = ({ onBack, token, apiUrl })
     };
     fetchDuenos();
   }, [token, apiUrl]);
+
+  const handleUpdateUsername = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!editingDueno || !newUsername) return;
+    try {
+      const res = await fetch(`${apiUrl}/admin/usuarios/${editingDueno.id}`, {
+        method: 'PUT',
+        headers: { 
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ username: newUsername })
+      });
+      if (res.ok) {
+        setDuenos(prev => prev.map(d => d.id === editingDueno.id ? { ...d, username: newUsername } : d));
+        setEditingDueno(null);
+        if (onRefresh) onRefresh();
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  };
 
   const handleSelectDueno = async (d: DuenoDetalle) => {
     setSelectedDueno(d);
@@ -156,12 +181,38 @@ export const DuenosView: React.FC<DuenosViewProps> = ({ onBack, token, apiUrl })
               <tbody>
                 {duenos.map((d, idx) => (
                   <tr key={idx}>
-                    <td className="fw-bold">{d.username}</td>
+                    <td className="fw-bold">
+                      {editingDueno?.id === d.id ? (
+                        <form onSubmit={handleUpdateUsername} className="d-flex gap-2">
+                          <input 
+                            className="form-control form-control-sm" 
+                            value={newUsername} 
+                            onChange={(e) => setNewUsername(e.target.value)}
+                            autoFocus
+                          />
+                          <button className="btn btn-sm btn-success" type="submit"><i className="fa-solid fa-check"></i></button>
+                          <button className="btn btn-sm btn-outline-secondary" type="button" onClick={() => setEditingDueno(null)}><i className="fa-solid fa-xmark"></i></button>
+                        </form>
+                      ) : (
+                        <span>{d.username}</span>
+                      )}
+                    </td>
                     <td><span className="badge bg-primary">{d.fincas} fincas</span></td>
                     <td className="text-end">
-                      <button className="btn btn-sm btn-outline-primary" onClick={() => handleSelectDueno(d)}>
-                        <i className="fa-solid fa-eye"></i> Ver Perfil
-                      </button>
+                      <div className="btn-group">
+                        <button className="btn btn-sm btn-outline-primary" onClick={() => handleSelectDueno(d)}>
+                          <i className="fa-solid fa-eye"></i> Ver Perfil
+                        </button>
+                        <button 
+                          className="btn btn-sm btn-outline-info" 
+                          onClick={() => {
+                            setEditingDueno(d);
+                            setNewUsername(d.username);
+                          }}
+                        >
+                          <i className="fa-solid fa-pen"></i> Editar
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 ))}

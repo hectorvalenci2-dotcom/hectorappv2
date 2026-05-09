@@ -6,9 +6,10 @@ interface FincasViewProps {
   token: string;
   apiUrl: string;
   onDeleteFinca?: (id: number) => Promise<boolean>;
+  resolveOwner?: (id?: number, nombre?: string) => string;
 }
 
-export const FincasView: React.FC<FincasViewProps> = ({ onBack, token, apiUrl, onDeleteFinca }) => {
+export const FincasView: React.FC<FincasViewProps> = ({ onBack, token, apiUrl, onDeleteFinca, resolveOwner }) => {
   const [fincas, setFincas] = useState<FincaDetalle[]>([]);
 
   const fetchFincas = async () => {
@@ -63,7 +64,7 @@ export const FincasView: React.FC<FincasViewProps> = ({ onBack, token, apiUrl, o
               <div className="d-flex justify-content-between align-items-center mb-2">
                 <h5 className="mb-0 text-success">{f.finca}</h5>
                 <div className="d-flex align-items-center gap-2">
-                  <span className="badge bg-light text-dark">Dueño: {f.dueno}</span>
+                  <span className="badge bg-light text-dark">Dueño: {resolveOwner ? resolveOwner(undefined, f.finca) : f.dueno}</span>
                   <button className="btn btn-sm btn-outline-danger border-0" onClick={() => handleDelete(f)}>
                     <i className="fa-solid fa-trash-can"></i>
                   </button>

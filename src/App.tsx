@@ -21,6 +21,8 @@ const App: React.FC = () => {
     adminStats,
     dashboardData,
     allEnfunde,
+    allDuenos,
+    allFincas,
     alert,
     login,
     register,
@@ -148,6 +150,8 @@ const App: React.FC = () => {
             stats={adminStats} 
             dashboardData={dashboardData} 
             allEnfunde={allEnfunde}
+            allDuenos={allDuenos}
+            allFincas={allFincas}
             token={token}
             apiUrl={API_URL}
             onRefresh={refreshAll}

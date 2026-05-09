@@ -6,11 +6,12 @@ interface MasterProductionMatrixProps {
   allEnfunde: any[];
   currentWeek: number;
   onRefresh?: () => void;
+  resolveOwner?: (id?: number, nombre?: string) => string;
 }
 
 type FilterType = 'General' | 'Enfunde' | 'Cosecha';
 
-export const MasterProductionMatrix: React.FC<MasterProductionMatrixProps> = ({ allEnfunde = [], currentWeek, onRefresh }) => {
+export const MasterProductionMatrix: React.FC<MasterProductionMatrixProps> = ({ allEnfunde = [], currentWeek, onRefresh, resolveOwner }) => {
   const [startWeek, setStartWeek] = useState(currentWeek);
   const [filter, setFilter] = useState<FilterType>('General');
   const [hideEmpty, setHideEmpty] = useState(true);
@@ -70,7 +71,7 @@ export const MasterProductionMatrix: React.FC<MasterProductionMatrixProps> = ({ 
         farms[fincaKey] = {
           id: r.finca_id,
           nombre: r.finca_nombre || 'Finca sin nombre',
-          dueno: r.dueno_username || 'Dueño desconocido',
+          dueno: resolveOwner ? resolveOwner(r.finca_id, r.finca_nombre) : (r.dueno_username || 'Dueño desconocido'),
           enfundeByWeek: {},
           cosechaByWeek: {}
         };
