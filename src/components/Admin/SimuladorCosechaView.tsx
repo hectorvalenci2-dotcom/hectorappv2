@@ -165,16 +165,20 @@ export const SimuladorCosechaView: React.FC<SimuladorCosechaViewProps> = ({ onBa
                     <td className="text-center">{l.cantidad_proyectada}</td>
                     <td className="text-center text-success fw-bold">{l.pendiente}</td>
                     <td className="text-center">
-                      <input 
-                        type="range" 
-                        min="18" 
-                        max="23" 
-                        step="0.5"
-                        className="form-range"
-                        value={l.pesoRacimo}
-                        onChange={(e) => updatePesoFinca(l.finca, parseFloat(e.target.value))}
-                      />
-                      <div className="small fw-bold">{l.pesoRacimo} kg</div>
+                      <div className="d-flex justify-content-center">
+                        <div className="input-group input-group-sm" style={{ width: '100px' }}>
+                          <input 
+                            type="number" 
+                            className="form-control text-center fw-bold" 
+                            value={l.pesoRacimo}
+                            step="0.1"
+                            min="1"
+                            max="50"
+                            onChange={(e) => updatePesoFinca(l.finca, parseFloat(e.target.value) || 0)}
+                          />
+                          <span className="input-group-text">kg</span>
+                        </div>
+                      </div>
                     </td>
                     <td className="text-end text-primary fw-black fs-5">
                       {l.cajas.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
