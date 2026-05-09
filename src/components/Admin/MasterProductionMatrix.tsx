@@ -1,5 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
+import { Package, Sprout, ChevronRight, ChevronLeft, RefreshCcw } from 'lucide-react';
 
 interface MasterProductionMatrixProps {
   allEnfunde: any[];
@@ -122,6 +123,14 @@ export const MasterProductionMatrix: React.FC<MasterProductionMatrixProps> = ({ 
     return totals;
   }, [matrixData, weeksRange, filter]);
 
+  const globalTotals = useMemo(() => {
+    const values = Object.values(weeklyTotals);
+    return {
+      enfunde: values.reduce((sum, wt: any) => sum + (wt.enfunde || 0), 0),
+      cosecha: values.reduce((sum, wt: any) => sum + (wt.cosecha || 0), 0)
+    };
+  }, [weeklyTotals]);
+
   return (
     <div className="card shadow-sm border-0 mb-4" id="master-production-matrix">
       <div className="card-header bg-white py-3 border-bottom-0">
@@ -193,6 +202,37 @@ export const MasterProductionMatrix: React.FC<MasterProductionMatrixProps> = ({ 
       </div>
       
       <div className="card-body p-0">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4 bg-slate-50 border-b border-slate-100">
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="bg-white rounded-2xl p-6 shadow-sm border border-blue-50 flex items-center justify-between"
+          >
+            <div>
+              <p className="text-slate-500 font-bold uppercase text-xs tracking-widest mb-1">Total Registros</p>
+              <h3 className="text-4xl font-black text-blue-600 tracking-tight">{globalTotals.enfunde.toLocaleString()}</h3>
+            </div>
+            <div className="w-16 h-16 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center">
+              <Package className="w-8 h-8" />
+            </div>
+          </motion.div>
+
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1 }}
+            className="bg-white rounded-2xl p-6 shadow-sm border border-emerald-50 flex items-center justify-between"
+          >
+            <div>
+              <p className="text-slate-500 font-bold uppercase text-xs tracking-widest mb-1">Total Cosecha</p>
+              <h3 className="text-4xl font-black text-emerald-600 tracking-tight">{globalTotals.cosecha.toLocaleString()}</h3>
+            </div>
+            <div className="w-16 h-16 bg-emerald-50 text-emerald-600 rounded-2xl flex items-center justify-center">
+              <Sprout className="w-8 h-8" />
+            </div>
+          </motion.div>
+        </div>
+
         <div className="table-responsive">
           <table className="table table-bordered align-middle mb-0" style={{ minWidth: '900px' }}>
             <thead className="table-light">
