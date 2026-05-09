@@ -123,13 +123,18 @@ export const MasterProductionMatrix: React.FC<MasterProductionMatrixProps> = ({ 
     return totals;
   }, [matrixData, weeksRange, filter]);
 
-  const globalTotals = useMemo(() => {
-    const values = Object.values(weeklyTotals);
-    return {
-      enfunde: values.reduce((sum, wt: any) => sum + (wt.enfunde || 0), 0),
-      cosecha: values.reduce((sum, wt: any) => sum + (wt.cosecha || 0), 0)
-    };
-  }, [weeklyTotals]);
+  const statsTotals = useMemo(() => {
+    const weekly = weeklyTotals[startWeek] || { enfunde: 0, cosecha: 0 };
+    const history = (allEnfunde || []).reduce((acc, r) => {
+      const reg = (r.cantidad_registrada || r.cantidad_racimos || 0);
+      const cosechado = (r.cantidad_cosechada || 0);
+      acc.enfunde += reg;
+      acc.cosecha += (reg - cosechado);
+      return acc;
+    }, { enfunde: 0, cosecha: 0 });
+
+    return { weekly, history };
+  }, [allEnfunde, weeklyTotals, startWeek]);
 
   return (
     <div className="card shadow-sm border-0 mb-4" id="master-production-matrix">
@@ -202,35 +207,72 @@ export const MasterProductionMatrix: React.FC<MasterProductionMatrixProps> = ({ 
       </div>
       
       <div className="card-body p-0">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4 bg-slate-50 border-b border-slate-100">
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="bg-white rounded-2xl p-6 shadow-sm border border-blue-50 flex items-center justify-between"
-          >
-            <div>
-              <p className="text-slate-500 font-bold uppercase text-xs tracking-widest mb-1">Total Registros</p>
-              <h3 className="text-4xl font-black text-blue-600 tracking-tight">{globalTotals.enfunde.toLocaleString()}</h3>
-            </div>
-            <div className="w-16 h-16 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center">
-              <Package className="w-8 h-8" />
-            </div>
-          </motion.div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 p-6 bg-slate-50 border-b border-slate-100">
+          {/* Tarjetas de Registro */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <motion.div 
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              className="bg-blue-600 rounded-3xl p-6 shadow-xl shadow-blue-100 text-white relative overflow-hidden flex flex-col justify-center"
+            >
+              <div className="absolute -top-4 -right-4 bg-white/10 p-8 rounded-full">
+                <Package size={40} className="text-white" />
+              </div>
+              <div className="relative z-10">
+                <p className="text-blue-100 font-bold uppercase text-[10px] tracking-widest mb-1">Registro Semanal</p>
+                <div className="flex items-baseline gap-2">
+                  <h3 className="text-4xl font-black">{statsTotals.weekly.enfunde.toLocaleString()}</h3>
+                  <span className="text-blue-200 text-xs font-bold px-2 py-0.5 bg-blue-500/50 rounded-lg">Sem. {startWeek}</span>
+                </div>
+              </div>
+            </motion.div>
 
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1 }}
-            className="bg-white rounded-2xl p-6 shadow-sm border border-emerald-50 flex items-center justify-between"
-          >
-            <div>
-              <p className="text-slate-500 font-bold uppercase text-xs tracking-widest mb-1">Total Cosecha</p>
-              <h3 className="text-4xl font-black text-emerald-600 tracking-tight">{globalTotals.cosecha.toLocaleString()}</h3>
-            </div>
-            <div className="w-16 h-16 bg-emerald-50 text-emerald-600 rounded-2xl flex items-center justify-center">
-              <Sprout className="w-8 h-8" />
-            </div>
-          </motion.div>
+            <motion.div 
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.1 }}
+              className="bg-white rounded-3xl p-6 shadow-sm border border-blue-100 flex flex-col justify-center"
+            >
+              <div className="flex items-center gap-3 mb-1">
+                <Package size={14} className="text-blue-500" />
+                <p className="text-slate-500 font-bold uppercase text-[10px] tracking-widest">Total Registros</p>
+              </div>
+              <h3 className="text-3xl font-black text-blue-700">{statsTotals.history.enfunde.toLocaleString()}</h3>
+            </motion.div>
+          </div>
+
+          {/* Tarjetas de Cosecha */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <motion.div 
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              className="bg-emerald-600 rounded-3xl p-6 shadow-xl shadow-emerald-100 text-white relative overflow-hidden flex flex-col justify-center"
+            >
+              <div className="absolute -top-4 -right-4 bg-white/10 p-8 rounded-full">
+                <Sprout size={40} className="text-white" />
+              </div>
+              <div className="relative z-10">
+                <p className="text-emerald-100 font-bold uppercase text-[10px] tracking-widest mb-1">Cosecha Semanal</p>
+                <div className="flex items-baseline gap-2">
+                  <h3 className="text-4xl font-black">{statsTotals.weekly.cosecha.toLocaleString()}</h3>
+                  <span className="text-emerald-200 text-xs font-bold px-2 py-0.5 bg-emerald-500/50 rounded-lg">Sem. {startWeek}</span>
+                </div>
+              </div>
+            </motion.div>
+
+            <motion.div 
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.1 }}
+              className="bg-white rounded-3xl p-6 shadow-sm border border-emerald-100 flex flex-col justify-center"
+            >
+              <div className="flex items-center gap-3 mb-1">
+                <Sprout size={14} className="text-emerald-500" />
+                <p className="text-slate-500 font-bold uppercase text-[10px] tracking-widest">Total Cosecha</p>
+              </div>
+              <h3 className="text-3xl font-black text-emerald-700">{statsTotals.history.cosecha.toLocaleString()}</h3>
+            </motion.div>
+          </div>
         </div>
 
         <div className="table-responsive">
