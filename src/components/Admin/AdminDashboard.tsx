@@ -85,77 +85,86 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ stats, dashboard
         );
       default:
         return (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mt-6 animate-in fade-in duration-500">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mt-8 animate-in fade-in zoom-in duration-500">
             {/* Gestión de Dueños */}
-            <div 
-              className="group cursor-pointer rounded-xl shadow-md hover:shadow-xl hover:scale-105 transition-all duration-300 bg-white border border-slate-100 flex flex-col items-center justify-center p-10 text-center" 
+            <button 
+              className="group relative bg-white p-8 rounded-3xl shadow-2xl hover:shadow-[0_35px_60px_-15px_rgba(0,0,0,0.3)] hover:-translate-y-4 transition-all duration-500 border border-slate-50 text-center overflow-hidden" 
               onClick={() => setView('duenos')}
             >
-              <div className="w-20 h-20 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-blue-600 group-hover:text-white transition-colors duration-300 shadow-inner">
-                <Users className="w-10 h-10" />
+              <div className="absolute top-0 right-0 w-32 h-32 bg-blue-50 rounded-bl-full -mr-16 -mt-16 group-hover:bg-blue-600 transition-colors duration-500 opacity-20 group-hover:opacity-100"></div>
+              <div className="relative z-10 flex flex-col items-center">
+                <div className="w-20 h-20 bg-blue-600 text-white rounded-2xl flex items-center justify-center mb-6 shadow-xl shadow-blue-200 group-hover:scale-110 transition-transform duration-500">
+                  <Users className="w-10 h-10" />
+                </div>
+                <h3 className="text-xl font-black text-slate-800 mb-2 tracking-tight">Gestión de Dueños</h3>
+                <div className="text-4xl font-black text-blue-600 mb-2">{stats?.totalDuenos || 0}</div>
+                <p className="text-slate-500 font-bold uppercase text-xs tracking-widest">Productores Activos</p>
               </div>
-              <h5 className="text-slate-800 font-black uppercase tracking-tight text-base mb-3">Gestión de Dueños</h5>
-              <div className="text-4xl font-black text-slate-900 mb-1">{stats?.totalDuenos || 0}</div>
-              <p className="text-slate-500 text-sm font-semibold">Usuarios Registrados</p>
-            </div>
+            </button>
 
             {/* Control de Fincas */}
-            <div 
-              className="group cursor-pointer rounded-xl shadow-md hover:shadow-xl hover:scale-105 transition-all duration-300 bg-white border border-slate-100 flex flex-col items-center justify-center p-10 text-center" 
+            <button 
+              className="group relative bg-white p-8 rounded-3xl shadow-2xl hover:shadow-[0_35px_60px_-15px_rgba(0,0,0,0.3)] hover:-translate-y-4 transition-all duration-500 border border-slate-50 text-center overflow-hidden" 
               onClick={() => setView('fincas')}
             >
-              <div className="w-20 h-20 bg-emerald-50 text-emerald-600 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-emerald-600 group-hover:text-white transition-colors duration-300 shadow-inner">
-                <MapPin className="w-10 h-10" />
+              <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-50 rounded-bl-full -mr-16 -mt-16 group-hover:bg-emerald-600 transition-colors duration-500 opacity-20 group-hover:opacity-100"></div>
+              <div className="relative z-10 flex flex-col items-center">
+                <div className="w-20 h-20 bg-emerald-600 text-white rounded-2xl flex items-center justify-center mb-6 shadow-xl shadow-emerald-200 group-hover:scale-110 transition-transform duration-500">
+                  <MapPin className="w-10 h-10" />
+                </div>
+                <h3 className="text-xl font-black text-slate-800 mb-2 tracking-tight">Control de Fincas</h3>
+                <div className="text-4xl font-black text-emerald-600 mb-2">{stats?.totalFincas || 0}</div>
+                <p className="text-slate-500 font-bold uppercase text-xs tracking-widest">Hectáreas en Control</p>
               </div>
-              <h5 className="text-slate-800 font-black uppercase tracking-tight text-base mb-3">Control de Fincas</h5>
-              <div className="text-4xl font-black text-slate-900 mb-1">{stats?.totalFincas || 0}</div>
-              <p className="text-slate-500 text-sm font-semibold">Propiedades Activas</p>
-            </div>
+            </button>
 
-            {/* Planificación por Fecha */}
-            <div 
-              className="group cursor-pointer rounded-xl shadow-md hover:shadow-xl hover:scale-105 transition-all duration-300 bg-white border border-slate-100 flex flex-col items-center justify-center p-10 text-center" 
+            {/* Planificación */}
+            <button 
+              className="group relative bg-white p-8 rounded-3xl shadow-2xl hover:shadow-[0_35px_60px_-15px_rgba(0,0,0,0.3)] hover:-translate-y-4 transition-all duration-500 border border-slate-50 text-center overflow-hidden" 
               onClick={() => setView('proyeccion')}
             >
-              <div className="w-20 h-20 bg-cyan-50 text-cyan-600 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-cyan-600 group-hover:text-white transition-colors duration-300 shadow-inner">
-                <Calendar className="w-10 h-10" />
+              <div className="absolute top-0 right-0 w-32 h-32 bg-cyan-50 rounded-bl-full -mr-16 -mt-16 group-hover:bg-cyan-600 transition-colors duration-500 opacity-20 group-hover:opacity-100"></div>
+              <div className="relative z-10 flex flex-col items-center">
+                <div className="w-20 h-20 bg-cyan-600 text-white rounded-2xl flex items-center justify-center mb-6 shadow-xl shadow-cyan-200 group-hover:scale-110 transition-transform duration-500">
+                  <Calendar className="w-10 h-10" />
+                </div>
+                <h3 className="text-xl font-black text-slate-800 mb-2 tracking-tight">Planificación</h3>
+                <div className="text-4xl font-black text-cyan-600 mb-2"><Search className="w-10 h-10 inline" /></div>
+                <p className="text-slate-500 font-bold uppercase text-xs tracking-widest">Por Rango de Fechas</p>
               </div>
-              <h5 className="text-slate-800 font-black uppercase tracking-tight text-base mb-3">Planificación por Fecha</h5>
-              <div className="text-4xl font-black text-slate-900 mb-1">
-                <Search className="w-10 h-10 mx-auto" />
-              </div>
-              <p className="text-slate-500 text-sm font-semibold">Proyecciones de Corte</p>
-            </div>
+            </button>
 
-            {/* Simulador de Cosecha */}
-            <div 
-              className="group cursor-pointer rounded-xl shadow-md hover:shadow-xl hover:scale-105 transition-all duration-300 bg-white border border-slate-100 flex flex-col items-center justify-center p-10 text-center" 
+            {/* Simulador */}
+            <button 
+              className="group relative bg-white p-8 rounded-3xl shadow-2xl hover:shadow-[0_35px_60px_-15px_rgba(0,0,0,0.3)] hover:-translate-y-4 transition-all duration-500 border border-slate-50 text-center overflow-hidden" 
               onClick={() => setView('simulador')}
             >
-              <div className="w-20 h-20 bg-amber-50 text-amber-600 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-amber-600 group-hover:text-white transition-colors duration-300 shadow-inner">
-                <FlaskConical className="w-10 h-10" />
+              <div className="absolute top-0 right-0 w-32 h-32 bg-amber-50 rounded-bl-full -mr-16 -mt-16 group-hover:bg-amber-600 transition-colors duration-500 opacity-20 group-hover:opacity-100"></div>
+              <div className="relative z-10 flex flex-col items-center">
+                <div className="w-20 h-20 bg-amber-600 text-white rounded-2xl flex items-center justify-center mb-6 shadow-xl shadow-amber-200 group-hover:scale-110 transition-transform duration-500">
+                  <FlaskConical className="w-10 h-10" />
+                </div>
+                <h3 className="text-xl font-black text-slate-800 mb-2 tracking-tight">Simulador</h3>
+                <div className="text-4xl font-black text-amber-600 mb-2"><Calculator className="w-10 h-10 inline" /></div>
+                <p className="text-slate-500 font-bold uppercase text-xs tracking-widest">Cosecha Estimada</p>
               </div>
-              <h5 className="text-slate-800 font-black uppercase tracking-tight text-base mb-3">Simulador de Cosecha</h5>
-              <div className="text-4xl font-black text-slate-900 mb-1">
-                <Calculator className="w-10 h-10 mx-auto" />
-              </div>
-              <p className="text-slate-500 text-sm font-semibold">Cálculos de Producción</p>
-            </div>
+            </button>
 
-            {/* Matriz de Control Maestro */}
-            <div 
-              className="group cursor-pointer rounded-xl shadow-md hover:shadow-xl hover:scale-105 transition-all duration-300 bg-white border border-slate-100 flex flex-col items-center justify-center p-10 text-center" 
+            {/* Matriz Maestro */}
+            <button 
+              className="group relative bg-white p-8 rounded-3xl shadow-2xl hover:shadow-[0_35px_60px_-15px_rgba(0,0,0,0.3)] hover:-translate-y-4 transition-all duration-500 border border-slate-50 text-center overflow-hidden lg:col-span-1" 
               onClick={() => setView('matriz')}
             >
-              <div className="w-20 h-20 bg-indigo-50 text-indigo-600 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-indigo-600 group-hover:text-white transition-colors duration-300 shadow-inner">
-                <Table className="w-10 h-10" />
+              <div className="absolute top-0 right-0 w-32 h-32 bg-indigo-50 rounded-bl-full -mr-16 -mt-16 group-hover:bg-indigo-600 transition-colors duration-500 opacity-20 group-hover:opacity-100"></div>
+              <div className="relative z-10 flex flex-col items-center">
+                <div className="w-20 h-20 bg-indigo-600 text-white rounded-2xl flex items-center justify-center mb-6 shadow-xl shadow-indigo-200 group-hover:scale-110 transition-transform duration-500">
+                  <Table className="w-10 h-10" />
+                </div>
+                <h3 className="text-xl font-black text-slate-800 mb-2 tracking-tight">Matriz Maestra</h3>
+                <div className="text-4xl font-black text-indigo-600 mb-2"><CalendarDays className="w-10 h-10 inline" /></div>
+                <p className="text-slate-500 font-bold uppercase text-xs tracking-widest">Control de Producción</p>
               </div>
-              <h5 className="text-slate-800 font-black uppercase tracking-tight text-base mb-3">Matriz de Control Maestro</h5>
-              <div className="text-4xl font-black text-slate-900 mb-1">
-                <CalendarDays className="w-10 h-10 mx-auto" />
-              </div>
-              <p className="text-slate-500 text-sm font-semibold">Resumen Semanal</p>
-            </div>
+            </button>
           </div>
         );
     }
