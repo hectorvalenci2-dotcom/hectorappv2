@@ -576,7 +576,7 @@ async function startServer() {
   if (!isProduction) {
     console.log('Starting in DEVELOPMENT mode (Vite middleware)');
     const vite = await createViteServer({
-      server: { middlewareMode: true },
+      server: { middlewareMode: true, allowedHosts: true },
       appType: 'spa',
     });
     app.use(vite.middlewares);
@@ -591,7 +591,7 @@ async function startServer() {
     } else {
       console.warn('Production mode enabled but dist/ not found. Falling back to Vite middleware.');
       const vite = await createViteServer({
-        server: { middlewareMode: true },
+        server: { middlewareMode: true, allowedHosts: true },
         appType: 'spa',
       });
       app.use(vite.middlewares);
